@@ -1,0 +1,1 @@
+void addNoise(unsigned char * image,int width , int height ,int amount);
