@@ -180,11 +180,11 @@ void saveImageAsPNG(const char* filename, unsigned char* image, int width, int h
     printf("Image suvsessfully Saved!");
 }
 
-void saveBitmap(const char* filename, unsigned char* image, int width, int height) {
+void saveBitmap(const char* filename, unsigned char* image, int width, int height , int channels) {
     setDestinationPath(filename);
-    printf("%s", filename);
+    printf("\n%d\n", channels);
     // Calculate the size of the image data and the BMP file
-    unsigned int imageSize = width * height * 3; // Assuming 24 bits per pixel (RGB)
+    unsigned int imageSize = width * height * channels; // Assuming 24 bits per pixel (RGB)
     unsigned int fileSize = sizeof(BitmapHeader) + imageSize;
 
     // Create and populate the bitmap header
@@ -197,7 +197,7 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     header.width = width;
     header.height = height;
     header.planes = 1;
-    header.bitsPerPixel = 24; // 24 bits per pixel (RGB)
+    header.bitsPerPixel = channels * 8; // 24 bits per pixel (RGB)
     header.compression = 0; // No compression
     header.imageSize = imageSize;
     header.horizontalRes = 0; // Use default resolution (72 pixels per meter)

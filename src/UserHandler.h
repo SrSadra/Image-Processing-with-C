@@ -18,6 +18,7 @@ void saveHandler(){
     char* inp =(char*) malloc(strSize);//?
     scanf("%s" , inp);
     printf("select type to save\n1. JPEG\n2. PNG\n");
+    printf("\n-channels %d", img->channels);
     int inpType;
     scanf("%d", &inpType);
     switch (inpType){
@@ -28,12 +29,13 @@ void saveHandler(){
 //        saveImageAsJPEG(inp , img->bytes, img->width , img->height , img->channels , quality);
             break;
         case 2:
-        saveImageAsPNG(inp , img->bytes , img->width , img->height , img->channels);
+            saveImageAsPNG(inp , img->bytes , img->width , img->height , img->channels);
         case 3:
-            saveBitmap(inp , img->bytes , img->width , img->height);
+            saveBitmap(inp , img->bytes , img->width , img->height , img->channels);
             printf("comp");
             break;
     }
+    free(inp);
     free(img);
 
 }
@@ -76,7 +78,7 @@ void effectHandler(){
                     int percent;
                     printf("Enter Amount of noise (0 , 400): ");
                     scanf("%d", &percent);
-                    addNoise(img->bytes , img->width , img->height , percent);
+                    addNoise(img->bytes , img->width , img->height , percent , img->channels);
                     printf("noise sucsessfuly added");
                 }
 
@@ -95,14 +97,19 @@ void effectHandler(){
 }
 
 void fileHandler(int input){
-    printf("3");
     img = (struct Image *) malloc(sizeof(struct Image) * imageSize);
 
     switch (input){
         case 1:;
             char* path = (char*) malloc(strSize);
             scanf("%s", path);
-            img->bytes = readfile( &(img->width) , &(img->height) , &(img->channels) , path );
+            printf("%s", path);
+            if (setFormat(path , img) == -1) {
+                printf("Invalid format!");
+            }
+            printf("alo2");
+            img->bytes = readfile( &(img->width) , &(img->height) , &(img->channels) , path , img->format );
+            printf("%d", img->channels);
             img->type = 1;
             img->path = path;
             free(path);
@@ -122,8 +129,8 @@ void userHandler(){
         scanf("%d", &input);
         fileHandler(input);
         printf("alo2");
-        // which Effect category
-        effectHandler();
+//        // which Effect category
+//        effectHandler();
 
         // destination path
         saveHandler();

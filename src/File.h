@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+ #include <string.h>
 #include <winsock2.h>
 // #include <windows.h>
 // #include <sys/types.h>
@@ -29,12 +29,46 @@ size_t write_callback(void* ptr, size_t size, size_t nmemb, FILE* stream) {
     return fwrite(ptr, size, nmemb, stream);
 }
 
-unsigned char* readfile(int* width , int* height  , int* channels , char* path){
-    unsigned char* image = stbi_load(path, width, height, channels, STBI_rgb);
+unsigned char* readfile(int* width , int* height  , int* channels , char* path , char* format){
+    unsigned char* image = (unsigned char*) malloc(10000000 * sizeof(char));
+    if (!strcmp(format , "png")){
+        printf("injaei");
+        image = stbi_load(path, width, height, channels, STBI_rgb_alpha);
+    }
+    else if (!strcmp(format , "jpg")){
+        image = stbi_load(path, width, height, channels, STBI_rgb);
+    }
+
     if (image == NULL){
         printf("Error reading the image");
         return NULL;
     }
+    // Calculate the size of each image row
+    size_t rowSize = (*width) * (*channels);
+
+//    // Temporary row buffer for flipping
+//    unsigned char* rowBuffer = (unsigned char*)malloc(rowSize);
+
+    for (int y = 0; y < (*height) / 2; y++) {
+        unsigned char* topRow = image + y * rowSize;
+        unsigned char* bottomRow = image + ((*height) - y - 1) * rowSize;
+
+        // Swap rows pixel-by-pixel
+        for (int x = 0; x < (*width); x++) {
+            unsigned char* topPixel = topRow + x * (*channels);
+            unsigned char* bottomPixel = bottomRow + x * (*channels);
+
+            // Swap pixel values
+            for (int c = 0; c < (*channels); c++) {
+                unsigned char temp = topPixel[c];
+                topPixel[c] = bottomPixel[c];
+                bottomPixel[c] = temp;
+            }
+        }
+    }
+
+//    free(rowBuffer);
+
     return image;
 }
 
