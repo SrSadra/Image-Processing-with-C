@@ -217,6 +217,20 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     }
 }
 
+
+int saveStbi(unsigned  char* image , char* path , int width , int height , int channels){
+    int result = stbi_write_png(path, width, height, channels, image, width * channels);
+    if (result == 0) {
+        printf("Error saving the image.\n");
+        return result;
+    }
+    printf("Image saved successfully.\n");
+    return result;
+}
+
+
+
+
 // int main() {
 //     // Example usage
 //     int width = 320;
