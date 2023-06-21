@@ -63,6 +63,9 @@ void effectHandler(){
                     scanf("%f" , &percent);
                     brightness(img->bytes , img->width , img->height , img->channels , percent);
                 }
+                else if (input == 3){
+                    applySepiaFilter(img->bytes , )
+                }
                 else {
                     printf("Invalid Input");
                     flg = 0;
@@ -82,6 +85,7 @@ void effectHandler(){
 
                 break;
             case 3:
+
                 break;
             case 4: //exit
 
