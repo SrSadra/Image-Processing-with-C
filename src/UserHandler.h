@@ -3,12 +3,14 @@
 #include "Image.h"
 #include "Effects\\Noise.h"
 #include "Effects\\Color.h"
+#include "Effects\\Redeye.h"
+#include "Effects\\Stylize.h"
 #include "Save.h"
 
 #define imageSize 1000000
 #define strSize 1000
 
- struct Image* img;
+struct Image* img;
 
 
 
@@ -28,12 +30,15 @@ void saveHandler(){
 //        saveImageAsJPEG(inp , img->bytes, img->width , img->height , img->channels , quality);
             break;
         case 2:
-        saveImageAsPNG(inp , img->bytes , img->width , img->height , img->channels);
+            saveImageAsPNG(inp , img->bytes , img->width , img->height , img->channels);
         case 3:
-            saveBitmap(inp , img->bytes , img->width , img->height);
+            saveBitmap(inp , img->bytes , img->width , img->height , img->channels);
             printf("comp");
             break;
+        case 4:
+            saveStbi(img->bytes , inp , img->width , img->height , img->channels);
     }
+    free(inp);
     free(img);
 
 }
@@ -56,12 +61,26 @@ void effectHandler(){
                         printf("gray sucsessfuly added!");
                     }
                 }
-                // costum 2 - brightness
+                    // costum 2 - brightness
                 else if (input == 2){
                     float percent;
                     printf("Enter Brighness percentage: ");
                     scanf("%f" , &percent);
                     brightness(img->bytes , img->width , img->height , img->channels , percent);
+                }
+                    // costum 3 - hue adjustment
+                else if (input == 3){
+                    float heuInp , saturationInp , brightnessInp;
+                    printf("Enter hue in range -180 to 180: ");
+                    scanf("%f" , &heuInp);
+                    printf("Enter saturation in range -100 to 100: ");
+                    scanf("%f" , &saturationInp);
+                    printf("Enter hue in range -100 to 100: ");
+                    scanf("%f" , &brightnessInp);
+                    int check = applyHslAdjustment(img->bytes , img->width , img->height , img->channels , heuInp , saturationInp , brightnessInp);
+                    if (check == 0){
+                        printf("Hsl applied");
+                    }
                 }
                 else {
                     printf("Invalid Input");
@@ -69,21 +88,51 @@ void effectHandler(){
                 }
 
                 break;
-                // add noise
-            case 2:
+            case 2: //add noise
                 scanf("%d", &input);
                 if (input == 1){
                     int percent;
                     printf("Enter Amount of noise (0 , 400): ");
                     scanf("%d", &percent);
-                    addNoise(img->bytes , img->width , img->height , percent);
+                    addNoise(img->bytes , img->width , img->height , percent , img->channels);
                     printf("noise sucsessfuly added");
                 }
 
                 break;
             case 3:
+                scanf("%d", &input);
+                if (input == 1){
+                    int check = removeRedEye(img->bytes , img->width , img->height , img->channels );
+                    if (check == 0){// modify check before graphic
+                        printf("Red Eye reduced");
+                    }
+                }
                 break;
-            case 4: //exit
+            case 4:
+                scanf("%d" , &input);
+                if (input == 1){
+                    int direction , strength;
+                    printf("Enter Wind direction (90 for upward , 180 for right to legt...): ");
+                    scanf("%d" , &direction);
+                    printf("Enter Wind strength:");
+                    scanf("%d", &strength);
+                    int check = windEffect(img->bytes , img->width , img->height , img->channels , direction , strength);
+                    if (check == 0){
+                        printf("Wind sucsessfuly added");
+                    }
+                }
+                else if (input == 2){
+                    int tileSize , spacing;
+                    printf("Enter tile Size (10 to %d): " , img->width);
+                    scanf("%d" , &tileSize);
+                    printf("Enter spacing (0 to %d): " , tileSize );
+                    scanf("%d", &spacing);
+                    int check = tilesEffect(img->bytes , img->width , img->height ,img->channels , tileSize , spacing);
+                    if (check == 0){
+                        printf("tiles sucsessfuly added");
+                    }
+                }
+            case 0: //exit
 
                 return;
                 break;
@@ -95,14 +144,18 @@ void effectHandler(){
 }
 
 void fileHandler(int input){
-    printf("3");
     img = (struct Image *) malloc(sizeof(struct Image) * imageSize);
 
     switch (input){
         case 1:;
             char* path = (char*) malloc(strSize);
             scanf("%s", path);
-            img->bytes = readfile( &(img->width) , &(img->height) , &(img->channels) , path );
+            printf("%s", path);
+            if (setFormat(path , img) == -1) {
+                printf("Invalid format!");
+            }
+            img->bytes = readfile( &(img->width) , &(img->height) , &(img->channels) , path , img->format );
+            printf("%d", img->channels);
             img->type = 1;
             img->path = path;
             free(path);
@@ -122,7 +175,7 @@ void userHandler(){
         scanf("%d", &input);
         fileHandler(input);
         printf("alo2");
-        // which Effect category
+//        // which Effect category
         effectHandler();
 
         // destination path
@@ -136,4 +189,3 @@ void userHandler(){
 // struct Image * imageHandler(){
 //     struct Image img;
 // }
-

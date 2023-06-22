@@ -1,1 +1,1 @@
-void addNoise(unsigned char * image,int width , int height ,int amount);
+void addNoise(unsigned char * image,int width , int height ,int amount , int channels);

@@ -44,7 +44,7 @@ typedef struct {
 
 
 void setDestinationPath(char* filePath){
-    if (*filePath == '0'){   
+    if (*filePath == '0'){
         char arr1[1000];
         char arr2[1000] = "//";
         sprintf(arr1 , "%d", counter);
@@ -180,11 +180,11 @@ void saveImageAsPNG(const char* filename, unsigned char* image, int width, int h
     printf("Image suvsessfully Saved!");
 }
 
-void saveBitmap(const char* filename, unsigned char* image, int width, int height) {
+void saveBitmap(const char* filename, unsigned char* image, int width, int height , int channels) {
     setDestinationPath(filename);
-    printf("%s", filename);
+    printf("\n%d\n", channels);
     // Calculate the size of the image data and the BMP file
-    unsigned int imageSize = width * height * 3; // Assuming 24 bits per pixel (RGB)
+    unsigned int imageSize = width * height * channels; // Assuming 24 bits per pixel (RGB)
     unsigned int fileSize = sizeof(BitmapHeader) + imageSize;
 
     // Create and populate the bitmap header
@@ -197,7 +197,7 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     header.width = width;
     header.height = height;
     header.planes = 1;
-    header.bitsPerPixel = 24; // 24 bits per pixel (RGB)
+    header.bitsPerPixel = channels * 8; // 24 bits per pixel (RGB)
     header.compression = 0; // No compression
     header.imageSize = imageSize;
     header.horizontalRes = 0; // Use default resolution (72 pixels per meter)
@@ -217,6 +217,20 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     }
 }
 
+
+int saveStbi(unsigned  char* image , char* path , int width , int height , int channels){// use this
+    int result = stbi_write_png(path, width, height, channels, image, width * channels);
+    if (result == 0) {
+        printf("Error saving the image.\n");
+        return result;
+    }
+    printf("Image saved successfully.\n");
+    return result;
+}
+
+
+
+
 // int main() {
 //     // Example usage
 //     int width = 320;
@@ -231,4 +245,3 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
 
 //     return 0;
 // }
-
