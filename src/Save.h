@@ -44,7 +44,7 @@ typedef struct {
 
 
 void setDestinationPath(char* filePath){
-    if (*filePath == '0'){   
+    if (*filePath == '0'){
         char arr1[1000];
         char arr2[1000] = "//";
         sprintf(arr1 , "%d", counter);
@@ -218,7 +218,7 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
 }
 
 
-int saveStbi(unsigned  char* image , char* path , int width , int height , int channels){
+int saveStbi(unsigned  char* image , char* path , int width , int height , int channels){// use this
     int result = stbi_write_png(path, width, height, channels, image, width * channels);
     if (result == 0) {
         printf("Error saving the image.\n");
@@ -245,4 +245,3 @@ int saveStbi(unsigned  char* image , char* path , int width , int height , int c
 
 //     return 0;
 // }
-

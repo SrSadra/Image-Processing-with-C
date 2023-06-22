@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
- #include <string.h>
+#include <string.h>
 #include <winsock2.h>
 // #include <windows.h>
 // #include <sys/types.h>
@@ -22,17 +22,16 @@
 // #pragma comment(lib, "ws2_32.lib")
 
 // void initialize(int type){
-    
+
 // }
 
-size_t write_callback(void* ptr, size_t size, size_t nmemb, FILE* stream) {
-    return fwrite(ptr, size, nmemb, stream);
-}
+//size_t write_callback(void* ptr, size_t size, size_t nmemb, FILE* stream) {
+//    return fwrite(ptr, size, nmemb, stream);
+//}
 
 unsigned char* readfile(int* width , int* height  , int* channels , char* path , char* format){
     unsigned char* image = (unsigned char*) malloc(10000000 * sizeof(char));
     if (!strcmp(format , "png")){
-        printf("injaei");
         image = stbi_load(path, width, height, channels, STBI_rgb_alpha);
     }
     else if (!strcmp(format , "jpg")){
@@ -46,8 +45,8 @@ unsigned char* readfile(int* width , int* height  , int* channels , char* path ,
 //    // Calculate the size of each image row
 //    size_t rowSize = (*width) * (*channels);
 //
-////    // Temporary row buffer for flipping
-////    unsigned char* rowBuffer = (unsigned char*)malloc(rowSize);
+//    // Temporary row buffer for flipping
+//    unsigned char* rowBuffer = (unsigned char*)malloc(rowSize);
 //
 //    for (int y = 0; y < (*height) / 2; y++) {
 //        unsigned char* topRow = image + y * rowSize;

@@ -88,7 +88,7 @@ unsigned char hueToRgb(float p, float q, float t) {
         return (unsigned char)(q * 255.0f);
     if (t < 2.0f / 3.0f)
         return (unsigned char)((p + (q - p) * (2.0f / 3.0f - t) * 6.0f) * 255.0f);
-    
+
     return (unsigned char)(p * 255.0f);
 }
 

@@ -10,7 +10,7 @@
 #define imageSize 1000000
 #define strSize 1000
 
- struct Image* img;
+struct Image* img;
 
 
 
@@ -61,14 +61,14 @@ void effectHandler(){
                         printf("gray sucsessfuly added!");
                     }
                 }
-                // costum 2 - brightness
+                    // costum 2 - brightness
                 else if (input == 2){
                     float percent;
                     printf("Enter Brighness percentage: ");
                     scanf("%f" , &percent);
                     brightness(img->bytes , img->width , img->height , img->channels , percent);
                 }
-                // costum 3 - hue adjustment
+                    // costum 3 - hue adjustment
                 else if (input == 3){
                     float heuInp , saturationInp , brightnessInp;
                     printf("Enter hue in range -180 to 180: ");
@@ -121,6 +121,17 @@ void effectHandler(){
                         printf("Wind sucsessfuly added");
                     }
                 }
+                else if (input == 2){
+                    int tileSize , spacing;
+                    printf("Enter tile Size (10 to %d): " , img->width);
+                    scanf("%d" , &tileSize);
+                    printf("Enter spacing (0 to %d): " , tileSize );
+                    scanf("%d", &spacing);
+                    int check = tilesEffect(img->bytes , img->width , img->height ,img->channels , tileSize , spacing);
+                    if (check == 0){
+                        printf("tiles sucsessfuly added");
+                    }
+                }
             case 0: //exit
 
                 return;
@@ -143,7 +154,6 @@ void fileHandler(int input){
             if (setFormat(path , img) == -1) {
                 printf("Invalid format!");
             }
-            printf("alo2");
             img->bytes = readfile( &(img->width) , &(img->height) , &(img->channels) , path , img->format );
             printf("%d", img->channels);
             img->type = 1;
@@ -179,4 +189,3 @@ void userHandler(){
 // struct Image * imageHandler(){
 //     struct Image img;
 // }
-
