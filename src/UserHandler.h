@@ -4,6 +4,11 @@
 #include "Effects\\Noise.h"
 #include "Effects\\Color.h"
 #include "Effects\\sepia.h"
+#include "Effects\\vignette.h"
+#include "Effects\\oilpaint.h"
+#include "Effects\\gaussianblur.h"
+#include "Effects\\emboss.h"
+#include "Effects\\solarize.h"
 #include "Save.h"
 
 #define imageSize 1000000
@@ -66,6 +71,21 @@ void effectHandler(){
                 }
                 else if (input == 3){
                     applySepiaFilter(img->bytes , img->width , img->height);
+                }
+                else if (input == 4){
+                    apply_vignette(img->bytes ,img->width , img->height ,img->channels);
+                }
+                else if (input == 5){
+                    applyOilPaintingFilter(img->bytes , img->width , img->height,img->channels);
+                }
+                else if (input ==6){
+                    applyGaussianBlurFilter(img->bytes , img->width , img->height,img->channels);
+                }
+                else if (input ==7){
+                    applyEmbbossFilter(img->bytes , img->width , img->height,img->channels);
+                }
+                else if (input ==8){
+                    applySolarizeFilter(img->bytes , img->width , img->height,img->channels);
                 }
                 else {
                     printf("Invalid Input");
