@@ -3,6 +3,7 @@
 #include "Image.h"
 #include "Effects\\Noise.h"
 #include "Effects\\Color.h"
+#include "Effects\\sepia.h"
 #include "Save.h"
 
 #define imageSize 1000000
@@ -64,7 +65,7 @@ void effectHandler(){
                     brightness(img->bytes , img->width , img->height , img->channels , percent);
                 }
                 else if (input == 3){
-                    applySepiaFilter(img->bytes , )
+                    applySepiaFilter(img->bytes , img->width , img->height);
                 }
                 else {
                     printf("Invalid Input");
