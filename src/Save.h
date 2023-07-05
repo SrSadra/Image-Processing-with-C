@@ -15,7 +15,7 @@
 // }
 // #endif
 
-
+#include <jpeglib.h>
 #include "C:/msys64/mingw64/include/libpng16/png.h"
 
 #define defautPath "data"
@@ -24,22 +24,22 @@ static int counter = 0;
 
 #pragma pack(push, 1) // Ensure struct is packed tightly
 typedef struct {
-    unsigned short signature;    // File type signature ('BM' for bitmap)
-    unsigned int fileSize;       // Size of the BMP file
-    unsigned int reserved;       // Reserved, set to 0
-    unsigned int dataOffset;     // Offset to the pixel data
-    unsigned int headerSize;     // Size of the DIB header
-    int width;                   // Width of the image
-    int height;                  // Height of the image
-    unsigned short planes;       // Number of color planes, set to 1
-    unsigned short bitsPerPixel; // Bits per pixel (usually 24 for RGB)
-    unsigned int compression;    // Compression method (usually 0 for uncompressed)
-    unsigned int imageSize;      // Size of the raw pixel data
-    int horizontalRes;           // Horizontal resolution (pixels per meter)
-    int verticalRes;             // Vertical resolution (pixels per meter)
-    unsigned int colors;         // Number of colors in the palette, set to 0 for RGB
-    unsigned int importantColors; // Number of important colors, set to 0
-} BitmapHeader;
+    unsigned short signature;     // File signature ("BM")
+    unsigned int fileSize;        // Size of the BMP file
+    unsigned int reserved;        // Reserved (should be 0)
+    unsigned int dataOffset;      // Offset to the pixel data
+    unsigned int headerSize;      // Size of the header
+    int width;                    // Image width
+    int height;                   // Image height (positive for bottom-up)
+    unsigned short planes;        // Number of color planes (should be 1)
+    unsigned short bitDepth;      // Number of bits per pixel
+    unsigned int compression;     // Compression type (0 for uncompressed)
+    unsigned int imageSize;       // Image size (0 for uncompressed)
+    int xResolution;              // Horizontal resolution (pixels per meter, signed)
+    int yResolution;              // Vertical resolution (pixels per meter, signed)
+    unsigned int colorsUsed;      // Number of colors used
+    unsigned int colorsImportant; // Number of important colors
+} BMPHeader;
 #pragma pack(pop)
 
 
@@ -55,61 +55,66 @@ void setDestinationPath(char* filePath){
     return;
 }
 
-// void saveImageAsJPEG(char* filename, unsigned char* image, int width, int height, int channels, int quality) {
-//     setDestinationPath(filename);
-//     // Open the output JPEG file
-//     FILE* jpegFile = fopen(filename, "wb");
-//     if (!jpegFile) {
-//         printf("Error creating JPEG file: %s\n", filename);
-//         return;
-//     }
+ void saveImageAsJPEG(char* filename, unsigned char* image, int width, int height, int channels, int quality) {
+     setDestinationPath(filename);
+     // Open the output JPEG file
+     FILE* jpegFile = fopen(filename, "wb");
+     if (!jpegFile) {
+         printf("Error creating JPEG file: %s\n", filename);
+         return;
+     }
 
-//     // Initialize the JPEG compression structure
-//     struct jpeg_compress_struct cinfo;
-//     struct jpeg_error_mgr jerr;
-//     cinfo.err = jpeg_std_error(&jerr);
-//     jpeg_create_compress(&cinfo);
-//     jpeg_stdio_dest(&cinfo, jpegFile);
+     // Initialize the JPEG compression structure
+     struct jpeg_compress_struct cinfo;
+     struct jpeg_error_mgr jerr;
+     cinfo.err = jpeg_std_error(&jerr);
+     jpeg_create_compress(&cinfo);
+     jpeg_stdio_dest(&cinfo, jpegFile);
 
-//     // Set JPEG image attributes
-//     cinfo.image_width = width;
-//     cinfo.image_height = height;
-//     cinfo.input_components = channels;
-//     cinfo.in_color_space = JCS_RGB;
+     // Set JPEG image attributes
+     cinfo.image_width = width;
+     cinfo.image_height = height;
+     cinfo.input_components = 3; // Always 3 for RGB
+     cinfo.in_color_space = JCS_RGB;
 
-//     // Set default compression parameters
-//     jpeg_set_defaults(&cinfo);
-//     jpeg_set_quality(&cinfo, quality, TRUE);
+     // Set default compression parameters
+     jpeg_set_defaults(&cinfo);
+     jpeg_set_quality(&cinfo, quality, TRUE);
 
-//     // Start the JPEG compression
-//     jpeg_start_compress(&cinfo, TRUE);
+     // Start the JPEG compression
+     jpeg_start_compress(&cinfo, TRUE);
 
-//     // Define row buffer to hold a single scanline
-//     JSAMPROW rowBuffer[1];
-//     int rowStride = width * channels;
-//     rowBuffer[0] = (JSAMPLE *)malloc(rowStride);
+     // Define row buffer to hold a single scanline
+     JSAMPROW rowBuffer[1];
+     int rowStride = width * 3; // 3 bytes per pixel (RGB)
+     rowBuffer[0] = (JSAMPLE *)malloc(rowStride);
 
-//     // Write scanlines to the JPEG file
-//     while (cinfo.next_scanline < cinfo.image_height) {
-//         // Copy scanline data from the input image buffer
-//         unsigned char* inputRow = image + (cinfo.next_scanline * rowStride);
-//         memcpy(rowBuffer[0], inputRow, rowStride);
+     // Write scanlines to the JPEG file
+     while (cinfo.next_scanline < cinfo.image_height) {
+         // Copy scanline data from the input image buffer
+         unsigned char* inputRow = image + (cinfo.next_scanline * width * channels);
+         for (int i = 0; i < width; ++i) {
+             // Copy RGB values, skipping the alpha channel
+             rowBuffer[0][i * 3 + 0] = inputRow[i * channels + 0]; // Red
+             rowBuffer[0][i * 3 + 1] = inputRow[i * channels + 1]; // Green
+             rowBuffer[0][i * 3 + 2] = inputRow[i * channels + 2]; // Blue
+         }
 
-//         // Write the scanline to the JPEG file
-//         jpeg_write_scanlines(&cinfo, rowBuffer, 1);
-//     }
+         // Write the scanline to the JPEG file
+         jpeg_write_scanlines(&cinfo, rowBuffer, 1);
+     }
 
-//     // Finish the JPEG compression
-//     jpeg_finish_compress(&cinfo);
-//     jpeg_destroy_compress(&cinfo);
+     // Finish the JPEG compression
+     jpeg_finish_compress(&cinfo);
+     jpeg_destroy_compress(&cinfo);
 
-//     // // Close the output file
-//     // fclose(jpegFile);
+     // Close the output file
+     fclose(jpegFile);
 
-//     // Free row buffer memory
-//     free(rowBuffer[0]);
-//     printf("Image suvsessfully Saved!"); // destination
-// }
+     // Free row buffer memory
+     free(rowBuffer[0]);
+     printf("Image suvsessfully Saved!"); // destination
+ }
 
 
 void saveImageAsPNG(const char* filename, unsigned char* image, int width, int height, int channels) {
@@ -165,56 +170,83 @@ void saveImageAsPNG(const char* filename, unsigned char* image, int width, int h
             fclose(file);
             return;
     }
-
+    printf("alooo:(");
     png_set_IHDR(png_ptr, info_ptr, width, height, 8, color_type, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-
+    printf("ajab");
     png_write_info(png_ptr, info_ptr);
 
     png_bytep row_pointer[height];
     for (int y = 0; y < height; ++y)
         row_pointer[y] = &image[y * width * channels];
-
-    png_write_image(png_ptr, row_pointer);
+    printf("alooo2:(");
+    png_write_image(png_ptr,row_pointer);
     png_destroy_write_struct(&png_ptr, &info_ptr); // deallocate memory
     printf("Image suvsessfully Saved!");
 }
 
-void saveBitmap(const char* filename, unsigned char* image, int width, int height , int channels) {
-    setDestinationPath(filename);
-    printf("\n%d\n", channels);
-    // Calculate the size of the image data and the BMP file
-    unsigned int imageSize = width * height * channels; // Assuming 24 bits per pixel (RGB)
-    unsigned int fileSize = sizeof(BitmapHeader) + imageSize;
-
-    // Create and populate the bitmap header
-    BitmapHeader header;
-    header.signature = 0x4D42; // 'BM' for bitmap
-    header.fileSize = fileSize;
-    header.reserved = 0;
-    header.dataOffset = sizeof(BitmapHeader);
-    header.headerSize = sizeof(BitmapHeader) - 14; // Size of the header excluding the common fields
-    header.width = width;
-    header.height = height;
-    header.planes = 1;
-    header.bitsPerPixel = channels * 8; // 24 bits per pixel (RGB)
-    header.compression = 0; // No compression
-    header.imageSize = imageSize;
-    header.horizontalRes = 0; // Use default resolution (72 pixels per meter)
-    header.verticalRes = 0; // Use default resolution (72 pixels per meter)
-    header.colors = 0; // No color palette
-    header.importantColors = 0; // All colors are important
-
-    // Create a file and write the bitmap header followed by the pixel data
+void saveBitmap(const char* filename, unsigned char* image, int width, int height, int channels) {
     FILE* file = fopen(filename, "wb");
-    if (file) {
-        fwrite(&header, sizeof(BitmapHeader), 1, file);
-        fwrite(image, 1, imageSize, file);
-        fclose(file);
-        printf("Bitmap saved successfully.\n");
-    } else {
-        printf("Error opening the file for writing.\n");
+    if (!file) {
+        printf("Failed to open the file for writing: %s\n", filename);
+        return;
     }
+
+    int bytesPerPixel = channels;
+    int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4; // Calculate padding bytes per row
+
+    BMPHeader bmpHeader;
+    bmpHeader.signature = 0x4D42;               // "BM"
+    bmpHeader.fileSize = sizeof(BMPHeader) + (width * bytesPerPixel + paddingSize) * height;
+    bmpHeader.reserved = 0;
+    bmpHeader.dataOffset = sizeof(BMPHeader);
+    bmpHeader.headerSize = 40;                   // Size of the BMP header
+    bmpHeader.width = width;
+    bmpHeader.height = height;
+    bmpHeader.planes = 1;
+    bmpHeader.bitDepth = bytesPerPixel * 8;
+    bmpHeader.compression = 0;
+    bmpHeader.imageSize = (width * bytesPerPixel + paddingSize) * height;
+    bmpHeader.xResolution = 0;
+    bmpHeader.yResolution = 0;
+    bmpHeader.colorsUsed = 0;
+    bmpHeader.colorsImportant = 0;
+
+    // Write the BMP header
+    fwrite(&bmpHeader, sizeof(BMPHeader), 1, file);
+
+    unsigned char* rowBuffer = (unsigned char*)malloc(width * bytesPerPixel);
+    if (!rowBuffer) {
+        fclose(file);
+        printf("Failed to allocate memory for row buffer\n");
+        return;
+    }
+
+    for (int y = height - 1; y >= 0; --y) {
+        int bufferIndex = 0;
+        for (int x = 0; x < width; ++x) {
+            // Copy color channels to the row buffer
+            for (int c = 0; c < channels; ++c) {
+                rowBuffer[bufferIndex++] = image[(y * width + x) * channels + c];
+            }
+
+            // Fill any remaining channels with 255 (fully opaque)
+            for (int c = channels; c < bytesPerPixel; ++c) {
+                rowBuffer[bufferIndex++] = 255;
+            }
+        }
+
+        // Add padding bytes if necessary
+        for (int p = 0; p < paddingSize; ++p) {
+            rowBuffer[bufferIndex++] = 0;
+        }
+
+        // Write the row to the BMP file
+        fwrite(rowBuffer, 1, width * bytesPerPixel + paddingSize, file);
+    }
+    free(rowBuffer);
+    fclose(file);
+    printf("Image successfully saved as BMP: %s\n", filename);
 }
 
 

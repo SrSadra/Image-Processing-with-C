@@ -27,13 +27,13 @@ void saveHandler(){
             int quality;
             printf("Enter Image Quality: ");
             scanf("%d", &quality);
-//        saveImageAsJPEG(inp , img->bytes, img->width , img->height , img->channels , quality);
+            saveImageAsJPEG(inp , img->bytes, img->width , img->height , img->channels , quality);
             break;
         case 2:
             saveImageAsPNG(inp , img->bytes , img->width , img->height , img->channels);
+            break;
         case 3:
             saveBitmap(inp , img->bytes , img->width , img->height , img->channels);
-            printf("comp");
             break;
         case 4:
             saveStbi(img->bytes , inp , img->width , img->height , img->channels);
@@ -55,7 +55,6 @@ void effectHandler(){
                 // which color costum 1 - make gray
                 scanf("%d", &input);
                 if (input == 1){
-                    printf("alo222\n");
                     int check = makeGray(img->bytes , img->width , img->height , img->channels);
                     if (check == 0){
                         printf("gray sucsessfuly added!");
@@ -83,10 +82,8 @@ void effectHandler(){
                     }
                 }
                 else {
-                    printf("Invalid Input");
-                    flg = 0;
+                    printf("Invalid Filter/Input!");
                 }
-
                 break;
             case 2: //add noise
                 scanf("%d", &input);
@@ -106,6 +103,9 @@ void effectHandler(){
                     if (check == 0){// modify check before graphic
                         printf("Red Eye reduced");
                     }
+                }
+                else {
+                    printf("Invalid Filter/Input!");
                 }
                 break;
             case 4:
@@ -131,6 +131,33 @@ void effectHandler(){
                     if (check == 0){
                         printf("tiles sucsessfuly added");
                     }
+                }
+                else if (input == 3){
+                    int check = diffuseEffect(img->bytes , img->width , img->height ,img->channels);
+                    if (check == 0){
+                        printf("diffuse sucsessfuly added");
+                    }
+                }
+
+//                else if (input == 4){
+//                    int pixelSize , depth;
+//                    printf("Enter pixel size: ");
+//                    scanf("%d", &pixelSize);
+//                    printf("Enter depth: ");
+//                    scanf("%d", &depth);
+//                    int check = extrudeEffect(img->bytes , img->width , img->height ,img->channels  ,pixelSize ,depth);
+//                    if (check == 0){
+//                        printf("diffuse sucsessfuly added");
+//                    }
+//                }
+                else if (input == 5){
+                    int check = findEdgeEffect(img->bytes , img->width , img->height , img->channels);
+                    if (check == 0){
+                        printf("find edge added!");
+                    }
+                }
+                else {
+                    printf("Invalid Filter/Input!");
                 }
             case 0: //exit
 
@@ -160,7 +187,30 @@ void fileHandler(int input){
             img->path = path;
             free(path);
             break;
-        case 2:
+        case 2:;
+            char* url = (char*) malloc(strSize);
+            char* dest = (char*) malloc(strSize);
+            printf("Enter Url: ");
+            scanf("%s", url);
+            printf("Enter destination to save: ");
+            scanf("%s" , dest);
+            img->bytes = download_image(url, dest,&(img->width) , &(img->height), &(img->channels));
+            img->type = 1;
+            img->path = url;
+            free(url);
+            break;
+        case 3:;
+            char* url2 = (char*) malloc(strSize);
+//            char* dest = (char*) malloc(strSize);
+            printf("Enter Url: ");
+            scanf("%s", url2);
+//            printf("Enter destination to save: ");
+//            scanf("%s" , dest);
+            img->bytes = downloadImage(url2, &(img->width) , &(img->height), &(img->channels));
+            printf("%d %d %d", img->width , img->height , img->channels);
+            img->type = 1;
+            img->path = url2;
+            free(url2);
             break;
     }
 }
