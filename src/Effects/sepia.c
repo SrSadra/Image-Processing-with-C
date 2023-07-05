@@ -1,1 +1,1 @@
-void applySepiaFilter(unsigned char* image, int width, int height);
+void applySepiaFilter(unsigned char* image, int width, int height,int channels);

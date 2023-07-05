@@ -112,7 +112,7 @@ void effectHandler(){
                 scanf("%d" , &input);
                 if (input == 1){
                     int direction , strength;
-                    printf("Enter Wind direction (90 for upward , 180 for right to legt...): ");
+                    printf("Enter Wind direction (90 for upward , 180 for right to left...): ");
                     scanf("%d" , &direction);
                     printf("Enter Wind strength:");
                     scanf("%d", &strength);
@@ -138,6 +138,8 @@ void effectHandler(){
                         printf("diffuse sucsessfuly added");
                     }
                 }
+                break;
+            case 5:
 
 //                else if (input == 4){
 //                    int pixelSize , depth;
@@ -159,6 +161,7 @@ void effectHandler(){
                 else {
                     printf("Invalid Filter/Input!");
                 }
+
             case 0: //exit
 
                 return;

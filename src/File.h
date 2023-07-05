@@ -43,7 +43,6 @@ unsigned char* readfile(int* width , int* height  , int* channels , char* path ,
     else if (!strcmp(format , "jpg")){
         image = stbi_load(path, width, height, channels, STBI_rgb);
     }
-
     if (image == NULL){
         printf("Error reading the image");
         return NULL;
