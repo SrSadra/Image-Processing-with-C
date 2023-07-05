@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-
 // void makecolor(unsigned char * image ,unsigned char color , int i , int width , int height , int channels){
 //     for (int i = 0; i < width * height * channels; i += channels) {
 //         // unsigned char r = image[i];
@@ -88,7 +87,7 @@ unsigned char hueToRgb(float p, float q, float t) {
         return (unsigned char)(q * 255.0f);
     if (t < 2.0f / 3.0f)
         return (unsigned char)((p + (q - p) * (2.0f / 3.0f - t) * 6.0f) * 255.0f);
-    
+
     return (unsigned char)(p * 255.0f);
 }
 
@@ -105,18 +104,24 @@ void hslToRgb(float h, float s, float l, unsigned char* r, unsigned char* g, uns
     }
 }
 
-void applyHslAdjustment(unsigned char* image, int width, int height, float hue, float saturation, float lightness) { // for applying 
+
+int applyHslAdjustment(unsigned char* image, int width, int height,int channels ,float hue, float saturation, float lightness) {
     for (int i = 0; i < width * height; i++) {
-        unsigned char r = image[i * 3];
-        unsigned char g = image[i * 3 + 1];
-        unsigned char b = image[i * 3 + 2];
+        unsigned char r = image[i * channels];
+        unsigned char g = image[i * channels + 1];
+        unsigned char b = image[i * channels + 2];
 
         float h, s, l;
         rgbToHsl(r, g, b, &h, &s, &l);
 
+        hue = fmin(180.0f, fmax(-180.0f, hue));
+        saturation = fmin(100.0f, fmax(-100.0f, saturation));
+        lightness = fmin(100.0f, fmax(-100.0f, lightness));
+
         hue = (hue + 180.0f) / 360.0f;
         saturation = 1.0f + (saturation / 100.0f);
-        lightness = lightness / 100.0f;
+        lightness = (lightness + 100.0f) / 200.0f;
+
         // Apply hue adjustment
         h += hue;
         if (h < 0.0f) h += 1.0f;
@@ -133,10 +138,11 @@ void applyHslAdjustment(unsigned char* image, int width, int height, float hue, 
         // Convert back to RGB
         hslToRgb(h, s, l, &r, &g, &b);
 
-        image[i * 3] = r;
-        image[i * 3 + 1] = g;
-        image[i * 3 + 2] = b;
+        image[i * channels] = r;
+        image[i * channels + 1] = g;
+        image[i * channels + 2] = b;
     }
+    return 0;
 }
 
 

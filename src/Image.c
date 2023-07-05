@@ -12,3 +12,4 @@ void setPath(char * path , struct Image* img);
 
 void setType(int type , struct Image* img);
 
+int setFormat(char* path , struct Image* img);

@@ -8,4 +8,4 @@ void rgbToHsl(unsigned char r, unsigned char g, unsigned char b, float* h, float
 
 void hslToRgb(float h, float s, float l, unsigned char* r, unsigned char* g, unsigned char* b);
 
-void applyHslAdjustment(unsigned char* image, int width, int height, float hue, float saturation, float lightness);
+int applyHslAdjustment(unsigned char* image, int width, int height,int channels ,float hue, float saturation, float lightness);

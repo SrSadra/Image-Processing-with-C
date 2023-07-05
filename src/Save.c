@@ -18,5 +18,6 @@ typedef struct {
 
 void saveBitmap(const char* filename, unsigned char* image, int width, int height);
 void setDestinationPath(char* filePath);
-//void saveImageAsJPEG(char* filename, unsigned char* image, int width, int height, int channels, int quality);
+void saveImageAsJPEG(char* filename, unsigned char* image, int width, int height, int channels, int quality);
 void saveImageAsPNG(char* filename, unsigned char* image, int width, int height, int channels);
+int saveStbi(unsigned  char* image , char* path , int width , int height , int channels);
