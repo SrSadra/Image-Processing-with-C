@@ -16,7 +16,7 @@
 // #endif
 
 
-#include "C:/msys64/mingw64/include/libpng16/png.h"
+#include "png.h"
 
 #define defautPath "data"
 

@@ -75,16 +75,13 @@ void effectHandler(){
                 else if (input == 4){
                     apply_vignette(img->bytes ,img->width , img->height ,img->channels);
                 }
-                else if (input == 5){
-                    applyOilPaintingFilter(img->bytes , img->width , img->height,img->channels);
-                }
-                else if (input ==6){
+                else if (input ==5){
                     applyGaussianBlurFilter(img->bytes , img->width , img->height,img->channels);
                 }
-                else if (input ==7){
+                else if (input ==6){
                     applyEmbbossFilter(img->bytes , img->width , img->height,img->channels);
                 }
-                else if (input ==8){
+                else if (input ==7){
                     applySolarizeFilter(img->bytes , img->width , img->height,img->channels);
                 }
                 else {

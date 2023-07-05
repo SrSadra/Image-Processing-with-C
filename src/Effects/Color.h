@@ -1,31 +1,4 @@
 #include <stdio.h>
-
-
-// void makecolor(unsigned char * image ,unsigned char color , int i , int width , int height , int channels){
-//     for (int i = 0; i < width * height * channels; i += channels) {
-//         // unsigned char r = image[i];
-//         // unsigned char g = image[i + 1];
-//         // unsigned char b = image[i + 2];
-//         image[i] = color;
-//     }
-// }
-
-//void applySepiaFilter(unsigned char* image, int width, int height) {
-//    for (int i = 0; i < width * height; i++) {
-//        unsigned char originalRed = image[i * 3];
-//        unsigned char originalGreen = image[i * 3 + 1];
-//        unsigned char originalBlue = image[i * 3 + 2];
-//
-//        unsigned char newRed = (unsigned char)((originalRed * 0.393) + (originalGreen * 0.769) + (originalBlue * 0.189));
-//        unsigned char newGreen = (unsigned char)((originalRed * 0.349) + (originalGreen * 0.686) + (originalBlue * 0.168));
-//        unsigned char newBlue = (unsigned char)((originalRed * 0.272) + (originalGreen * 0.534) + (originalBlue * 0.131));
-//
-//        image[i * 3] = newRed;
-//        image[i * 3 + 1] = newGreen;
-//        image[i * 3 + 2] = newBlue;
-//    }
-//}
-
 int makeGray(unsigned char* image, int width, int height, int channels) {
     printf("%d %d %d" , width , height , channels);
     for (int i = 0; i < width * height * channels; i += channels) {
@@ -104,7 +77,7 @@ unsigned char hueToRgb(float p, float q, float t) {
         return (unsigned char)(q * 255.0f);
     if (t < 2.0f / 3.0f)
         return (unsigned char)((p + (q - p) * (2.0f / 3.0f - t) * 6.0f) * 255.0f);
-    
+
     return (unsigned char)(p * 255.0f);
 }
 
@@ -121,7 +94,7 @@ void hslToRgb(float h, float s, float l, unsigned char* r, unsigned char* g, uns
     }
 }
 
-void applyHslAdjustment(unsigned char* image, int width, int height, float hue, float saturation, float lightness) { // for applying 
+void applyHslAdjustment(unsigned char* image, int width, int height, float hue, float saturation, float lightness) { // for applying
     for (int i = 0; i < width * height; i++) {
         unsigned char r = image[i * 3];
         unsigned char g = image[i * 3 + 1];
