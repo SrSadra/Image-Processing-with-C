@@ -1,0 +1,1 @@
+void applySaturationFilter(unsigned char* image, int width, int height, int channels) ;
