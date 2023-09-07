@@ -20,21 +20,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a6edeaa0-b206-47c3-b38f-9e7f03e32088" name="Changes" comment="&quot;something happended&quot;">
-      <change beforePath="$PROJECT_DIR$/Effects/Color.c" beforeDir="false" afterPath="$PROJECT_DIR$/Effects/Color.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Effects/Color.h" beforeDir="false" afterPath="$PROJECT_DIR$/Effects/Color.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Effects/Stylize.c" beforeDir="false" afterPath="$PROJECT_DIR$/Effects/Stylize.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Effects/Stylize.h" beforeDir="false" afterPath="$PROJECT_DIR$/Effects/Stylize.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/File.c" beforeDir="false" afterPath="$PROJECT_DIR$/File.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/File.h" beforeDir="false" afterPath="$PROJECT_DIR$/File.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/Image.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Main.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Save.h" beforeDir="false" afterPath="$PROJECT_DIR$/Save.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserHandler.c" beforeDir="false" afterPath="$PROJECT_DIR$/UserHandler.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserHandler.h" beforeDir="false" afterPath="$PROJECT_DIR$/UserHandler.h" afterDir="false" />
-    </list>
+    <list default="true" id="a6edeaa0-b206-47c3-b38f-9e7f03e32088" name="Changes" comment="&quot;something happended&quot;" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -137,7 +123,7 @@
       <workItem from="1688995611968" duration="7462000" />
       <workItem from="1693924817187" duration="4181000" />
       <workItem from="1694034938591" duration="6072000" />
-      <workItem from="1694086846054" duration="4572000" />
+      <workItem from="1694086846054" duration="5064000" />
     </task>
     <servers />
   </component>
@@ -225,5 +211,16 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="&quot;something happended&quot;" />
     <option name="LAST_COMMIT_MESSAGE" value="&quot;something happended&quot;" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/email.h</url>
+          <line>69</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

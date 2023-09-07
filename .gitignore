@@ -5,4 +5,10 @@ src/a.exe
 .env
 .lib
 src/cacert-2023-05-30.pem
+src/.idea
+src/CMakeLists.txt
+src/jpeg.lib
+src/libjpeg.lib
+src/WS2_32.Lib
+
 
