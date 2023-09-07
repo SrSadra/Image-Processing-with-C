@@ -3,18 +3,6 @@
 #include <string.h>
 
 
-// #define cimg_use_jpeg
-// #ifdef cimg_use_jpeg
-// #define HAVE_BOOLEAN
-// #define JPEG_INTERNALS
-// #include <jpeglib.h>
-// #include "D:\\new project c\\src\\lib\\jpeg-9e-h2bbff1b_1\\Library\include\\jpeglib.h"
-// extern "C" {
-// #include "D:\\c-effect-project\\stb_image\\jpeg\\jpeglib.h"
-// #include "setjmp.h"
-// }
-// #endif
-
 #include <jpeglib.h>
 #include "C:/msys64/mingw64/include/libpng16/png.h"
 
@@ -193,7 +181,7 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     }
 
     int bytesPerPixel = channels;
-    int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4; // Calculate padding bytes per row
+    int paddingSize = (4 - (width * bytesPerPixel) % 4) % 4; //(width * bytesperpixel) = bytes per row
 
     BMPHeader bmpHeader;
     bmpHeader.signature = 0x4D42;               // "BM"
@@ -212,7 +200,6 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     bmpHeader.colorsUsed = 0;
     bmpHeader.colorsImportant = 0;
 
-    // Write the BMP header
     fwrite(&bmpHeader, sizeof(BMPHeader), 1, file);
 
     unsigned char* rowBuffer = (unsigned char*)malloc(width * bytesPerPixel);
@@ -225,23 +212,11 @@ void saveBitmap(const char* filename, unsigned char* image, int width, int heigh
     for (int y = height - 1; y >= 0; --y) {
         int bufferIndex = 0;
         for (int x = 0; x < width; ++x) {
-            // Copy color channels to the row buffer
             for (int c = 0; c < channels; ++c) {
                 rowBuffer[bufferIndex++] = image[(y * width + x) * channels + c];
             }
-
-            // Fill any remaining channels with 255 (fully opaque)
-            for (int c = channels; c < bytesPerPixel; ++c) {
-                rowBuffer[bufferIndex++] = 255;
-            }
         }
 
-        // Add padding bytes if necessary
-        for (int p = 0; p < paddingSize; ++p) {
-            rowBuffer[bufferIndex++] = 0;
-        }
-
-        // Write the row to the BMP file
         fwrite(rowBuffer, 1, width * bytesPerPixel + paddingSize, file);
     }
     free(rowBuffer);
@@ -259,21 +234,3 @@ int saveStbi(unsigned  char* image , char* path , int width , int height , int c
     printf("Image saved successfully.\n");
     return result;
 }
-
-
-
-
-// int main() {
-//     // Example usage
-//     int width = 320;
-//     int height = 240;
-//     unsigned char* image = (unsigned char*)malloc(width * height * 3); // RGB image with 8 bits per channel
-
-//     // Populate the image data...
-
-//     saveImageAsPNG("output.png", image, width, height);
-
-//     free(image);
-
-//     return 0;
-// }

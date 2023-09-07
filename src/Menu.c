@@ -1,0 +1,2 @@
+void welcomeMenu();
+int endMenu();

@@ -5,7 +5,7 @@
 #include <time.h>
 
 
-int windEffect(unsigned char* image, int width, int height , int channels, int direction , int strength) {
+int mynewFilter(unsigned char* image, int width, int height , int channels, int direction) {
     int amplitude = 10;
     int wavelength = 3;
     if (direction == 0) { // Left to right
@@ -53,7 +53,6 @@ int windEffect(unsigned char* image, int width, int height , int channels, int d
 
 int tilesEffect(unsigned char* image, int width, int height, int channels, int tileSize, int spacing) {
     srand(time(NULL));
-    printf("31");
     int* arr = (int *) calloc(width * height , sizeof(int));
     // Calculate the number of tiles in rows and columns
     int numCols = (width + spacing) / (tileSize + spacing) + 1;
@@ -62,24 +61,22 @@ int tilesEffect(unsigned char* image, int width, int height, int channels, int t
     // Calculate the total size of each block, including the spacing
     int blockSize = tileSize + spacing;
 
-    // Iterate over each tile
+    // iterate over each tile
     for (int row = 0; row < numRows; row++) {
         for (int col = 0; col < numCols; col++) {
-            // Generate random offsets for each tile
             int offsetX = rand() % (2 * spacing + 1) - spacing;
             int offsetY = rand() % (2 * spacing + 1) - spacing;
 
-            // Calculate the starting pixel coordinates of the current tile with offset
-            int startX = col * blockSize + offsetX;
+            int startX = col * blockSize + offsetX;// start coordinate of each block
             int startY = row * blockSize + offsetY;
-            // Process each pixel within the tile
-            for (int y = 0; y < tileSize; y++) {
+
+            for (int y = 0; y < tileSize; y++) {// pixels in the tiles
                 for (int x = 0; x < tileSize; x++) {
-                    // Calculate the coordinates of the current pixel within the image
+                    //coordinates of the current pixel in the image
                     int imageX = startX + x;
                     int imageY = startY + y;
 
-                    // Check if the current pixel is within the image bounds
+                    // check if the current pixel is in the image bounds
                     if (imageX >= 0 && imageX < width && imageY >= 0 && imageY < height) {
                         arr[(imageY * width + imageX)] = 1;
 
@@ -89,7 +86,7 @@ int tilesEffect(unsigned char* image, int width, int height, int channels, int t
         }
     }
     printf("alo12");
-    for (int i = 0 ; i < height ; i++){
+    for (int i = 0 ; i < height ; i++){ //copy image and remove between tiles
         for (int k = 0 ; k < width ; k++){
             if (arr[i * width + k] == 0 ){
                         unsigned char red = image[(i * width + k) * channels];           // Red channel
@@ -99,13 +96,11 @@ int tilesEffect(unsigned char* image, int width, int height, int channels, int t
                         if (channels == 4) {
                             alpha = image[(i * width + k) * channels + 3];
                         }
-                        // Perform operations on each channel separately
-                        // Example: Invert the color of each channel
-                        image[(i * width + k) * channels] = 255 - red;
-                        image[(i * width + k) * channels + 1] = 255 - green;
-                        image[(i * width + k) * channels + 2] = 255 - blue;
+                        image[(i * width + k) * channels] = 0;
+                        image[(i * width + k) * channels + 1] = 0;
+                        image[(i * width + k) * channels + 2] = 0;
                         if (channels == 4) {
-                            image[(i * width + k) * channels + 3] = 255 - alpha;
+                            image[(i * width + k) * channels + 3] = 0;
                         }
             }
         }
@@ -118,20 +113,17 @@ int tilesEffect(unsigned char* image, int width, int height, int channels, int t
 int diffuseEffect(unsigned char* image, int width, int height, int channels) {
     unsigned char* blurredImage = malloc(width * height * channels);
 
-    // Copy the original image to the blurred image
-    for (int i = 0; i < width * height * channels; i++) {
+    for (int i = 0; i < width * height * channels; i++) {// copy the original image
         blurredImage[i] = image[i];
     }
 
-    // Apply the diffuse filter
+
     for (int y = 1; y < height - 1; y++) {
         for (int x = 1; x < width - 1; x++) {
             int sum[channels];
             for (int c = 0; c < channels; c++) {
                 sum[c] = 0;
             }
-
-            // Sum the color values of neighboring pixels
             for (int j = -1; j <= 1; j++) {
                 for (int i = -1; i <= 1; i++) {
                     int pixelIndex = ((y + j) * width + (x + i)) * channels;
@@ -141,7 +133,6 @@ int diffuseEffect(unsigned char* image, int width, int height, int channels) {
                 }
             }
 
-            // Average the color values and set them to the blurred image
             int blurredPixelIndex = (y * width + x) * channels;
             for (int c = 0; c < channels; c++) {
                 blurredImage[blurredPixelIndex + c] = sum[c] / 9;
@@ -149,7 +140,6 @@ int diffuseEffect(unsigned char* image, int width, int height, int channels) {
         }
     }
 
-    // Copy the blurred image back to the original image
     for (int i = 0; i < width * height * channels; i++) {
         image[i] = blurredImage[i];
     }
@@ -214,7 +204,7 @@ int extrudeEffect(unsigned char* image, int width, int height, int channels,int 
 
 
 int findEdgeEffect(unsigned char* image, int width, int height, int channels) {
-    // Create a copy of the original image
+    // create a copy of the original image
     unsigned char* edgeImage = malloc(width * height * channels * sizeof(unsigned char));
     for (int i = 0; i < width * height * channels; i++) {
         edgeImage[i] = image[i];
@@ -262,3 +252,158 @@ int findEdgeEffect(unsigned char* image, int width, int height, int channels) {
     free(edgeImage);
     return 0;
 }
+
+int windEffect(unsigned char* image, int width, int height,int channels ,int windStrength, int windDirection){// 1 horizontal , -1 vertical
+
+    // Temporary buffer to store the modified image
+    unsigned char* tempImage = malloc(width * height * sizeof(unsigned char));
+
+    // Apply the wind filter
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            int newX, newY;
+            if (windDirection == 1)
+            {
+                newX = (x + windStrength) % width;
+                newY = y;
+            }
+            else
+            {
+                newX = x;
+                newY = (y + windStrength) % height;
+            }
+
+            // Copy the pixel from the original position to the new position for each channel
+            for (int c = 0; c < channels; c++)
+            {
+                tempImage[(newY * width + newX) * channels + c] = image[(y * width + x) * channels + c];
+            }
+        }
+    }
+
+    // Copy the modified image back to the original image
+    for (int i = 0; i < width * height * channels; i++)
+    {
+        image[i] = tempImage[i];
+    }
+    return 0;
+}
+
+
+int applyEmbbossFilter(unsigned char* image, int width, int height, int channels) {
+    int kernel[3][3] = {
+            {-2, -1, 0},
+            {-1, 1, 1},
+            {0, 1, 2}
+    };
+
+    unsigned char* result = malloc(width * height * channels * sizeof(unsigned char));
+    if (result == NULL) {
+        printf("Failed to allocate memory\n");
+        return 1;
+    }
+
+    int i, j, k;
+    for (i = 1; i < height - 1; i++) {
+        for (j = 1; j < width - 1; j++) {
+            for (k = 0; k < channels; k++) {
+                int sum = 0;
+
+                // Convolve the kernel with the image pixels
+                for (int m = -1; m <= 1; m++) {
+                    for (int n = -1; n <= 1; n++) {
+                        int pixelIndex = ((i + m) * width + (j + n)) * channels + k;
+                        int kernelValue = kernel[m + 1][n + 1];
+                        sum += image[pixelIndex] * kernelValue;
+                    }
+                }
+
+                // Clamp the pixel value to the range [0, 255]
+                result[(i * width + j) * channels + k] = (unsigned char)(sum > 255 ? 255 : (sum < 0 ? 0 : sum));
+            }
+
+            // Set alpha channel value to 255 (fully opaque) for RGBA images
+            if (channels == 4) {
+                result[(i * width + j) * channels + 3] = 255;
+            }
+        }
+    }
+
+    // Copy the result back to the original image
+    for (i = 0; i < width * height * channels; i++) {
+        image[i] = result[i];
+    }
+
+    return 0;
+}
+
+
+int applyOilPainting(unsigned char* image, int width, int height, int channels ,int brushSize) {//you can get the level as brushsize
+    int i, j, k;
+    int radius = brushSize/ 2;//brush size=5
+
+    // Create a temporary buffer to store the modified image
+    unsigned char* tempImage = (unsigned char*)malloc(width * height * channels * sizeof(unsigned char));
+    if (tempImage == NULL) {
+        printf("Failed to allocate memory for temporary image buffer\n");
+        return 1;
+    }
+
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            int index = (i * width + j) * channels;
+
+            // Initialize color intensity counters for each channel
+            int intensityCount[256] = {0};
+            int maxCount = 0;
+            int maxIntensity = 0;
+
+            // Collect color intensities within the brush radius
+            for (int y = -radius; y <= radius; y++) {
+                for (int x = -radius; x <= radius; x++) {
+                    int posX = j + x;
+                    int posY = i + y;
+
+                    // Skip pixels outside the image boundary
+                    if (posX < 0 || posY < 0 || posX >= width || posY >= height)
+                        continue;
+
+                    int pixelIndex = (posY * width + posX) * channels;
+
+                    // Calculate color intensity
+                    int intensity = 0;
+                    for (k = 0; k < channels; k++) {
+                        intensity += image[pixelIndex + k];
+                    }
+                    intensity /= channels;
+
+                    // Update intensity count for the corresponding intensity level
+                    intensityCount[intensity]++;
+                    if (intensityCount[intensity] > maxCount) {
+                        maxCount = intensityCount[intensity];
+                        maxIntensity = intensity;
+                    }
+                }
+            }
+
+            // Set the color of the current pixel to the color with the highest count
+            for (k = 0; k < channels; k++) {
+                tempImage[index + k] = maxIntensity;
+            }
+        }
+    }
+
+    // Copy the modified image back to the original image
+    for (i = 0; i < width * height * channels; i++) {
+        image[i] = tempImage[i];
+    }
+
+    // Free the temporary image buffer
+    free(tempImage);
+
+    return 0;
+}
+
+

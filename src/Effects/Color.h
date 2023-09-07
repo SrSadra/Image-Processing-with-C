@@ -10,7 +10,6 @@
 // }
 
 int makeGray(unsigned char* image, int width, int height, int channels) {
-    printf("%d %d %d" , width , height , channels);
     for (int i = 0; i < width * height * channels; i += channels) {
         unsigned char r = image[i];
         unsigned char g = image[i + 1];
@@ -20,7 +19,6 @@ int makeGray(unsigned char* image, int width, int height, int channels) {
         image[i] = gray;
         image[i + 1] = gray;
         image[i + 2] = gray;
-        printf("%d\n", i);
     }
     return 0;
 }
@@ -146,6 +144,42 @@ int applyHslAdjustment(unsigned char* image, int width, int height,int channels 
 }
 
 
+int applySepiaFilter(unsigned char* image, int width, int height, int channels) {
+    for (int i = 0; i < width * height; i++) {
+        unsigned char* pixel = image + (i * channels);
+
+        unsigned char originalRed = pixel[0];
+        unsigned char originalGreen = pixel[1];
+        unsigned char originalBlue = pixel[2];
+
+        // Define the tolerance range for colors near white and yellow
+        int whiteTolerance = 95;
+        int yellowTolerance = 33;
+
+        // Check if the pixel is within the tolerance range of white or yellow
+        if ((originalRed > 255 - whiteTolerance && originalGreen > 255 - whiteTolerance && originalBlue > 255 - whiteTolerance) ||
+            (originalRed > 255 - yellowTolerance && originalGreen > 255 - yellowTolerance)) {
+            // Skip applying the sepia filter to near-white and near-yellow pixels
+            continue;
+        }
+
+        unsigned char newRed = (unsigned char)((originalRed * 0.393) + (originalGreen * 0.769) + (originalBlue * 0.189));
+        unsigned char newGreen = (unsigned char)((originalRed * 0.349) + (originalGreen * 0.686) + (originalBlue * 0.168));
+        unsigned char newBlue = (unsigned char)((originalRed * 0.272) + (originalGreen * 0.534) + (originalBlue * 0.131));
+
+        pixel[0] = newRed;
+        pixel[1] = newGreen;
+        pixel[2] = newBlue;
+
+        if (channels == 4) {
+            // Handle alpha channel if the image has one
+            unsigned char originalAlpha = pixel[3];
+            pixel[3] = originalAlpha;
+        }
+    }
+
+    return 0;
+}
 
 
 
