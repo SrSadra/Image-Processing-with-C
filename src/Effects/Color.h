@@ -1,13 +1,5 @@
 #include <stdio.h>
 
-// void makecolor(unsigned char * image ,unsigned char color , int i , int width , int height , int channels){
-//     for (int i = 0; i < width * height * channels; i += channels) {
-//         // unsigned char r = image[i];
-//         // unsigned char g = image[i + 1];
-//         // unsigned char b = image[i + 2];
-//         image[i] = color;
-//     }
-// }
 
 int makeGray(unsigned char* image, int width, int height, int channels) {
     for (int i = 0; i < width * height * channels; i += channels) {

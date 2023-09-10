@@ -106,7 +106,6 @@ void setDestinationPath(char* filePath){
 
 
 void saveImageAsPNG(const char* filename, unsigned char* image, int width, int height, int channels) {
-    printf("alola");
     setDestinationPath(filename);
     FILE* file = fopen(filename, "wb");
     if (!file) {
@@ -158,16 +157,13 @@ void saveImageAsPNG(const char* filename, unsigned char* image, int width, int h
             fclose(file);
             return;
     }
-    printf("alooo:(");
     png_set_IHDR(png_ptr, info_ptr, width, height, 8, color_type, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-    printf("ajab");
     png_write_info(png_ptr, info_ptr);
 
     png_bytep row_pointer[height];
     for (int y = 0; y < height; ++y)
         row_pointer[y] = &image[y * width * channels];
-    printf("alooo2:(");
     png_write_image(png_ptr,row_pointer);
     png_destroy_write_struct(&png_ptr, &info_ptr); // deallocate memory
     printf("Image suvsessfully Saved!");

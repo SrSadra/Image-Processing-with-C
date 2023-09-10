@@ -33,7 +33,6 @@ int fileLocal(char* path , int type){
         return 2;
 
     }
-    printf("%d", img->channels);
     img->type = type;
     img->path = (char *) malloc(strSize * sizeof(char));
     memcpy(img->path , path , strSize * sizeof(char));
@@ -49,7 +48,6 @@ void saveHandler(){
     int inpType;
     scanf("%s" , inp);
     if (!strcmp(inp , "0")){
-        printf("-format %s", img->format);
         inp = img->path;
         flg = 1;
     }
@@ -92,7 +90,6 @@ void saveHandler(){
 }
 
 void effectHandler(){
-    printf("here");
     int input;
     while (1){
         fflush(stdin);
@@ -444,7 +441,6 @@ void userHandler(){
     welcomeMenu();
 
     while (1){
-        printf("%s" , getenv("test"));
         // choose option
         fileHandler();
 
